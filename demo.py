@@ -94,7 +94,7 @@ if __name__ == "__main__":
             file_name = ''
             for i in range(len(path)):
               if path[len(path)-1-i]!='/':
-                file_name = file_name + path[i]
+                file_name = file_name + path[len(path)-1-i]
               else :
                 break  
             file_name = file_name[::-1]   
@@ -104,7 +104,7 @@ if __name__ == "__main__":
             grad_y = cv2.Sobel(edg_img,cv2.CV_16S,0,1)
             direction = np.arctan2(grad_y,grad_x)
             result_model = []
-            for  b in range(len(predictions)):
+            for  b in range(len(predictions["instances"].pred_boxes)):
               x0= predictions["instances"].pred_boxes.tensor[b][0]
               y0=predictions["instances"].pred_boxes.tensor[b][1]
               x1=predictions["instances"].pred_boxes.tensor[b][2]
@@ -143,13 +143,15 @@ if __name__ == "__main__":
             #csv
             file_name = file_name[:len(file_name)-3]
             import csv
-            file_name='/content/drive/MyDrive/Final/SparseR-CNN/datasets/coco/output'+file_name+'csv'
+            #file_name='/content/drive/MyDrive/Final/SparseR-CNN/datasets/coco/output/'+file_name+'csv'
+            file_name='.\SparseR-CNN\datasets\coco\output\'+file_name+'csv'
             #file_name = '.\\'+file_name+'csv'
             with open(file_name,'w', newline='') as csvfile :
                 data = csv.writer(csvfile,delimiter = ',')
                 for i in range(len(result_model)):
-                    data.writerow(result_model[i]
-  
+                    data.writerow(result_model[i])
+            
+                        
             logger.info(
                 "{}: {} in {:.2f}s".format(
                     path,
