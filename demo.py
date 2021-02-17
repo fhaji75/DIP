@@ -85,7 +85,7 @@ if __name__ == "__main__":
             assert args.input, "The input path(s) was not found"
         for path in tqdm.tqdm(args.input, disable=not args.output):
             # use PIL, to be consistent with evaluation
-#             img = read_image(path, format="BGR")
+            #img = read_image(path, format="BGR")
             # SparseRCNN uses RGB input as default 
             img = read_image(path, format="RGB")
             start_time = time.time()
@@ -105,7 +105,14 @@ if __name__ == "__main__":
             direction = np.arctan2(grad_y,grad_x)
             result_model = []
             for  b in range(len(predictions)):
-              x0,y0,x1,y1 = predictions[b][0], predictions[b][1],predictions[b][2],predictions[b][3]
+              x0= predictions["instances"].pred_boxes.tensor[b][0]
+              y0=predictions["instances"].pred_boxes.tensor[b][1]
+              x1=predictions["instances"].pred_boxes.tensor[b][2]
+              y1=predictions["instances"].pred_boxes.tensor[b][3]
+              #x0 = predictions[b][0]
+              #y0 = predictions[b][1]
+              #x1 = predictions[b][2]
+              #y1 = predictions[b][3]
               x_intersection = int((x0+x1)/2)
               y_intersection = int((y0+y1)/2)
               hist = {}
@@ -136,11 +143,12 @@ if __name__ == "__main__":
             #csv
             file_name = file_name[:len(file_name)-3]
             import csv
-            file_name = '.\\'+file_name+'csv'
+            file_name='/content/drive/MyDrive/Final/SparseR-CNN/datasets/coco/output'+file_name+'csv'
+            #file_name = '.\\'+file_name+'csv'
             with open(file_name,'w', newline='') as csvfile :
                 data = csv.writer(csvfile,delimiter = ',')
                 for i in range(len(result_model)):
-                    data.writerow(result_model[i])
+                    data.writerow(result_model[i]
   
             logger.info(
                 "{}: {} in {:.2f}s".format(
